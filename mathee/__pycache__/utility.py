@@ -1,17 +1,25 @@
 from initialise import *
-from random import *
+
+
 
 def text_objects(text, font):
     textSurface = font.render(text, True, black)
     return textSurface, textSurface.get_rect()
- 
-def message_display(text,pos_x,pos_y,size):
-    largeText = pig.font.Font('freesansbold.ttf',size)
+
+
+def message_display(text,pos_x,pos_y,size = 50, fix_right = 0, fix_left = 0, fixed_point = display_width/2 ):
+    
+    largeText = pig.font.Font(schrift,size)
     TextSurf, TextRect = text_objects(text, largeText)
+    if fix_right == 1: 
+            
+            length = len(text)*size*0.8
+            pos_x = fixed_point - length/2
     TextRect.center = ((pos_x),(pos_y))
     gameDisplay.blit(TextSurf, TextRect)  
 
 
+    
 
 class event_queue():
 
@@ -26,14 +34,14 @@ class label(event_queue):
     keys = { pig.K_1 : 1, pig.K_2 : 2, pig.K_3 : 3 , pig.K_4 : 4 , pig.K_5 :5 , pig.K_6 : 6, pig.K_7 : 7
             , pig.K_8 : 8 ,pig.K_9 : 9, pig.K_0 : 0}
     
-    values = []
+    
     
     def __init__(self, x,y, size = 50):
         
         self.x = x
         self.y = y
         self.size = size
-      
+        self.values = []
         
     def fill_values(self):
         
@@ -53,25 +61,40 @@ class label(event_queue):
                     except:
                         #index out of bounds
                         pass
-                    
+    @property               
+    def number(self):
+        num = 0
+        for i,lit in enumerate(self.values):
+            num += lit*10**(len(self.values) -i-1)
+        return num     
+    
+                        
     def display(self):
-        num = ''.join(str(i) for i in self.values)
-        message_display(num, self.x,self.y, self.size)
+        num = ''.join(str(i) for i in self.values)        
+        button(self.x, self.y, 40,40, num, no_click_func = self.fill_values, size = self.size)
         
+        
+     
     def delete(self):
         self.values[:] = []
-       
+        
+    @staticmethod 
+    def delete_all(inst):
+        
+        [label.delete() for label in inst]
   
-def button(x,y,w,h, text, func = lambda : None, size = 30):
+def button(x,y,w,h, text = '', func = lambda : None, no_click_func = lambda : None , size = 30):
     #wenn innerhalb button
     mouse = pig.mouse.get_pos()
     
     
     if x+w > mouse[0] > x and y+h > mouse[1] > y:
+        
         pig.draw.rect(gameDisplay, black,(x,y,w,h))
+        message_display(text,x+(w/2),y+(h/2),size)
+        no_click_func()
         
-        #wenn gedruckt
-        
+        #wenn gedrückt        
         for event in event_queue.events:
             if event.type == pig.MOUSEBUTTONDOWN:
                 
@@ -89,7 +112,7 @@ def button(x,y,w,h, text, func = lambda : None, size = 30):
 def maindeco(func):
  
     
-    def structure():
+    def structure(*args):
         while 1:
             
             event_queue.events_update()
@@ -101,74 +124,9 @@ def maindeco(func):
                     quit()
             
             gameDisplay.fill(white)
-            func()
+            func(*args)
 
             pig.display.update()      
             
             clock.tick(30)
     return structure
-
-
-def spiel_bruch():
-    
-    r = randint(1, 3)
-
-    Nenner1=randint(1, 20)
-    Zahler1=randint(1, 20)
-    Nenner2=randint(1, 20)
-
-    Zahler2=randint(1, 20)
-    NeuerZahler1 = Zahler1 * Nenner2
-    NeuerZahler2 = Zahler2 * Nenner1
-    NeuerNenner1 = Nenner1 * Nenner2
-
-    if r == 1:
-      op = "+"
-      z3=NeuerZahler1+NeuerZahler2
-      n3=NeuerNenner1
-     
-    elif r == 2:
-      op = "-"
-      z3=NeuerZahler1-NeuerZahler2
-      n3=NeuerNenner1 
-      
-    elif r == 3:
-      op = "*"
-      z3=Zahler1*Zahler2
-      n3=Nenner1*Nenner2
-      
-    if z3 == 0:
-        z3 = 0
-        n3 = 1
-  
-    else:
-      for x in range(400,1,-1):
-        if (z3 % x == 0) and (n3 % x == 0):
-          z3 = z3/x
-          n3 = n3/x
-          break
-
-    message_display(str(Zahler1), 180, 300, 40 )
-    message_display('-----------', 180, 325, 25 )
-    message_display(str(Nenner1), 180, 350, 40 )
-    
-    message_display(str(op), 305, 325 , 40 )
-    
-    message_display(str(Zahler2),430 , 300, 40 )
-    message_display('-----------',430, 325, 25 )
-    message_display(str(Nenner2), 430, 350, 40 )
-    
-    message_display('=', 550, 325, 40 )
-    
-    message_display(str(z3), 620, 300, 40 )
-    message_display('-----------',620, 325, 25 )
-    message_display(str(n3), 620, 350, 40 )
-    
-
-
-
-
-
-
-
-
