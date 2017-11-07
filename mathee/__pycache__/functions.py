@@ -25,7 +25,7 @@ def second_menue():
 class base_task(object):
     
     size = 50
-    Input = label(display_width*0.7, display_height*0.5, size = 40)
+    
     
     def __init__(self,operations, task_num = 10, mixed = False ):
         
@@ -34,7 +34,7 @@ class base_task(object):
         self.mixed = mixed
         #a list containing operator dict keys
         self.operations = operations
-        self.input = label(display_width*0.7, display_height*0.5, size = 40)
+        self.inputs = [label(display_width*0.7, display_height*0.5, size = 40)]
         self.record = []
         self.current_task = 0
         
@@ -62,8 +62,9 @@ class base_task(object):
     def display_task(self):
         
         message_display(self.operation_to_string(),display_width/2,display_height/2, fix_right = 1)
-        self.input.fill_values()
-        self.input.display()
+        
+        [user_num.display() for user_num in self.inputs]
+        
         button(display_width*0.55, display_height*0.9, display_width*0.3125,display_height/6
                ,'Eingabe', self.enter, size = 50)
    
@@ -75,7 +76,7 @@ class base_task(object):
     
     def verify(self):
        
-       if self.Input.number == self.get_result():
+       if all( user.number == correct_num for (user, correct_num) in (self.inputs, self.get_result()) ) :
 
            return 1
        else:
@@ -86,7 +87,7 @@ class base_task(object):
         self.record.append(self.verify())
         
         if self.current_task < self.task_num:
-            self.Input.delete()
+            label.delete_all(self.inputs)
             self.generate_numbers()
             self.current_task += 1           
             self.operation_to_string
@@ -114,6 +115,7 @@ class brüche(base_task):
         
         self.operations.insert(0,'/')
         self.operations.append('/')
+        self.inputs.append(label(display_width*0.7, display_height*0.7, size = 40))
         
         self.init()
         
@@ -159,12 +161,6 @@ class brüche(base_task):
                 
         return z3,n3
     
-    def verify(self):
-        
-        if self.Input.number == self.get_result()[0] and self.input2.number == self.get_result()[1]:
-           return 1
-        else:
-           return 0
         
         
     @maindeco
@@ -182,9 +178,9 @@ class brüche(base_task):
         message_display('=', 550, 325, 40 )
         
         
-        self.input.display() 
+        [user_num.display() for user_num in self.inputs]
         message_display('-----------',620, 325, 25 )
-        self.input2.display()
+        
         
         button(display_width*0.55, display_height*0.9, display_width*0.3125,display_height/6
                ,'Eingabe', self.enter, size = 50)        
@@ -192,9 +188,9 @@ class brüche(base_task):
         
         
         
-bruch = brüche(['+'])  
-    
-add = base_task(['+'])        
+#bruch = brüche(['+'])  
+#bruch.display_task()    
+      
         
         
         
