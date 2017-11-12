@@ -32,7 +32,8 @@ class event_queue():
 class label(event_queue):
     
     keys = { pig.K_1 : 1, pig.K_2 : 2, pig.K_3 : 3 , pig.K_4 : 4 , pig.K_5 :5 , pig.K_6 : 6, pig.K_7 : 7
-            , pig.K_8 : 8 ,pig.K_9 : 9, pig.K_0 : 0}
+        , pig.K_8 : 8 ,pig.K_9 : 9, pig.K_0 : 0, pig.K_MINUS: '-', pig.K_COMMA: ','}
+
     
     
     
@@ -63,10 +64,28 @@ class label(event_queue):
                         pass
     @property               
     def number(self):
+        
         num = 0
-        for i,lit in enumerate(self.values):
-            num += lit*10**(len(self.values) -i-1)
-        return num     
+        values = [x for x in self.values]
+        sign = 1
+        
+        if values.count('-')> 0:
+            sign = -1
+            #not using remove for the case of multiple - inputs
+            values = [x for x in values if x!= '-']
+            
+        try:
+            ind = values.index(',')
+            length = len(values[:ind])
+            values = [x for x in values if x!= ',']
+            
+        except: #no comma
+            length = len(values)
+            
+        for i,lit in enumerate(values):
+            num += lit*10**(length -i -1)
+            
+        return num*sign   
     
                         
     def display(self):
