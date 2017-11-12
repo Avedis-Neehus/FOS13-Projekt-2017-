@@ -20,7 +20,7 @@ def second_menue():
     button( display_width*0.1, display_height*0.3, display_width*0.3125,display_height/6,'+', add.display_task, size = 60)
     button( display_width*0.55, display_height*0.3, display_width*0.3125,display_height/6,'-',  main_menue, size = 100)
     button( display_width*0.1, display_height*0.5, display_width*0.3125,display_height/6,'*', main_menue, size = 60)
-    button( display_width*0.55, display_height*0.5, display_width*0.3125,display_height/6,'/', main_menue, size = 60)
+    button( display_width*0.55, display_height*0.5, display_width*0.3125,display_height/6,'/', main_menue , size = 60)
 
 class base_task(object):
     
@@ -70,14 +70,12 @@ class base_task(object):
    
     def get_result(self):
         
-            return eval(self.term)
-                    
-                         
+            return [eval(self.term)]
+                                             
     
     def verify(self):
        
-       if all( user.number == correct_num for (user, correct_num) in (self.inputs, self.get_result()) ) :
-
+       if all( abs(user.number-correct_num) < 0.05 for user, correct_num in zip(self.inputs, self.get_result()) ) :           
            return 1
        else:
            return 0
@@ -100,7 +98,7 @@ class base_task(object):
         self.operation_to_string()
         
         
-add = base_task(['+'])
+add = base_task(['-'])
 add.init()        
         
 class brüche(base_task):
@@ -184,8 +182,3 @@ class brüche(base_task):
         
         button(display_width*0.55, display_height*0.9, display_width*0.3125,display_height/6
                ,'Eingabe', self.enter, size = 50)  
-        
-        
-add = base_task(['+'])
-   
-        
