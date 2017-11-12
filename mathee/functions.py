@@ -25,7 +25,7 @@ def second_menue():
 class base_task(object):
     
     size = 50
-    Input = label(display_width*0.7, display_height*0.5, size = 40)
+    
     
     def __init__(self,operations, task_num = 10, mixed = False ):
         
@@ -34,12 +34,12 @@ class base_task(object):
         self.mixed = mixed
         #a list containing operator dict keys
         self.operations = operations
-        self.input = label(display_width*0.7, display_height*0.5, size = 40)
+        self.inputs = [label(display_width*0.7, display_height*0.5, size = 40)]
         self.record = []
         self.current_task = 0
         
-        self.init()
         
+    
     def generate_numbers(self, start = 0, stop = 20):
         
         self.nums = []
@@ -62,19 +62,21 @@ class base_task(object):
     def display_task(self):
         
         message_display(self.operation_to_string(),display_width/2,display_height/2, fix_right = 1)
-        self.input.fill_values()
-        self.input.display()
+        
+        [user_num.display() for user_num in self.inputs]
+        
         button(display_width*0.55, display_height*0.9, display_width*0.3125,display_height/6
                ,'Eingabe', self.enter, size = 50)
    
     def get_result(self):
         
             return eval(self.term)
-                                          
+                    
+                         
     
     def verify(self):
        
-       if self.Input.number == self.get_result():
+       if all( user.number == correct_num for (user, correct_num) in (self.inputs, self.get_result()) ) :
 
            return 1
        else:
@@ -85,16 +87,103 @@ class base_task(object):
         self.record.append(self.verify())
         
         if self.current_task < self.task_num:
-            self.Input.delete()
+            label.delete_all(self.inputs)
             self.generate_numbers()
             self.current_task += 1           
             self.operation_to_string
         else:
             main_menue()
+            
     def init(self):
         
         self.generate_numbers()
         self.operation_to_string()
+        
+        
+add = base_task(['+'])
+add.init()        
+        
+class brüche(base_task):
+    
+    input2 = label(display_width*0.7, display_height*0.7, size = 40)  
+    
+    def __init__(self,operations, task_num = 10, mixed = False):
+        
+        super().__init__(operations, task_num , mixed )
+        
+        assert (len(self.operations)==1), 'brüche takes only one operator'
+        
+        self.operations.insert(0,'/')
+        self.operations.append('/')
+        self.inputs.append(label(display_width*0.7, display_height*0.7, size = 40))
+        
+        self.init()
+        
+    def generate_numbers(self, start = 0, stop = 20):
+        super().generate_numbers(start, stop )
+        
+        self.Nenner1= self.nums[1]
+        self.Zahler1= self.nums[0]
+        self.Nenner2= self.nums[3]        
+        self.Zahler2= self.nums[2]
+        
+        self.NeuerZahler1 = self.Zahler1 * self.Nenner2
+        self.NeuerZahler2 = self.Zahler2 * self.Nenner1
+        self.NeuerNenner1 = self.Nenner1 * self.Nenner2
+        
+    def get_result(self):    
+        
+        if self.operations[1] == '+':
+             
+             z3=self.NeuerZahler1+self.NeuerZahler2
+             n3=self.NeuerNenner1
+         
+        elif self.operations[1] == "-":
+              
+              z3=self.NeuerZahler1-self.NeuerZahler2
+              n3=self.NeuerNenner1 
+          
+        elif self.operations[1] == "*":
+              
+              z3=self.Zahler1*self.Zahler2
+              n3=self.Nenner1*self.Nenner2
+          
+        if z3 == 0:
+                z3 = 0
+                n3 = 1
+      
+        else:
+            for x in range(400,1,-1):
+                if (z3 % x == 0) and (n3 % x == 0):
+                    z3 = z3/x
+                    n3 = n3/x
+                    break
+                
+        return z3,n3
+    
+        
+        
+    @maindeco
+    def display_task(self):
+        
+        message_display(str(self.Zahler1), 180, 300, 40 )
+        message_display('-----------', 180, 325, 25 )
+        message_display(str(self.Nenner1), 180, 350, 40 )
+        
+        message_display(self.operations[1], 305, 325 , 40 )
+        
+        message_display(str(self.Zahler2),430 , 300, 40 )
+        message_display('-----------',430, 325, 25 )
+        message_display(str(self.Nenner2), 430, 350, 40 )        
+        message_display('=', 550, 325, 40 )
+        
+        
+        [user_num.display() for user_num in self.inputs]
+        message_display('-----------',620, 325, 25 )
+        
+        
+        button(display_width*0.55, display_height*0.9, display_width*0.3125,display_height/6
+               ,'Eingabe', self.enter, size = 50)  
         
         
 add = base_task(['+'])
