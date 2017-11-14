@@ -17,37 +17,55 @@ def main_menue():
 @maindeco
 def second_menue():
                    
-    button( display_width*0.1, display_height*0.3, display_width*0.3125,display_height/6,'+', add.display_task, size = 60)
-    button( display_width*0.55, display_height*0.3, display_width*0.3125,display_height/6,'-',  main_menue, size = 100)
-    button( display_width*0.1, display_height*0.5, display_width*0.3125,display_height/6,'*', main_menue, size = 60)
-    button( display_width*0.55, display_height*0.5, display_width*0.3125,display_height/6,'/', main_menue , size = 60)
+    button( display_width*0.1, display_height*0.3, display_width*0.3125,display_height/6,'+', einfach['+'].display_task, size = 60)
+    button( display_width*0.55, display_height*0.3, display_width*0.3125,display_height/6,'-',  einfach['-'].display_task, size = 100)
+    button( display_width*0.1, display_height*0.5, display_width*0.3125,display_height/6,'*', einfach['*'].display_task, size = 60)
+    button( display_width*0.55, display_height*0.5, display_width*0.3125,display_height/6,'/', bruch.display_task, size = 60)
 
 class base_task(object):
     
     size = 50
     
     
-    def __init__(self,operations, task_num = 10, mixed = False ):
+    def __init__(self,operations, task_num = 10, mixed = False, reals = 0, start = 0, stop = 20 ):
         
         
         self.task_num = task_num
         self.mixed = mixed
+        self.start = start
+        self.stop = stop
         #a list containing operator dict keys
         self.operations = operations
         self.inputs = [label(display_width*0.7, display_height*0.5, size = 40)]
-        self.record = []
+        self.record = result(task_num)
         self.current_task = 0
         
         
-    
-    def generate_numbers(self, start = 0, stop = 20):
+        
+        
+    def num_type(self):
+        
+        n = random.randint(self.start, self.stop)
+        
+        #if self.reals:
+         #   return float(format(n, '.2f'))
+        return n
+        
+    def mix_op(self):
+        
+        if self.mixed:
+            random.shuffle(self.operations)
+        else: 
+            pass
+        
+    def generate_numbers(self):
         
         self.nums = []
         
         kardinal = len(self.operations) +1
         
         for i in range(kardinal):
-            self.nums.append(random.randint(start,stop))
+            self.nums.append(self.num_type())
             
         return self.nums
     
@@ -64,6 +82,8 @@ class base_task(object):
         message_display(self.operation_to_string(),display_width/2,display_height/2, fix_right = 1)
         
         [user_num.display() for user_num in self.inputs]
+        
+        self.record.draw()
         
         button(display_width*0.55, display_height*0.9, display_width*0.3125,display_height/6
                ,'Eingabe', self.enter, size = 50)
@@ -82,14 +102,17 @@ class base_task(object):
        
     def enter(self):
         
-        self.record.append(self.verify())
+        self.record.update(self.verify())
         
         if self.current_task < self.task_num:
             label.delete_all(self.inputs)
+            self.mix_op()
             self.generate_numbers()
             self.current_task += 1           
-            self.operation_to_string
+                        
         else:
+            self.record.clear()
+            self.current_task = 0 
             main_menue()
             
     def init(self):
@@ -99,15 +122,16 @@ class base_task(object):
         
         
 add = base_task(['-'])
-add.init()        
+add.init()     
+
         
 class brüche(base_task):
     
     input2 = label(display_width*0.7, display_height*0.7, size = 40)  
     
-    def __init__(self,operations, task_num = 10, mixed = False):
+    def __init__(self,operations, task_num = 10, mixed = False, reals = 0, start = 0, stop = 20 ):
         
-        super().__init__(operations, task_num , mixed )
+        super().__init__(operations, task_num , mixed, reals, start, stop )
         
         assert (len(self.operations)==1), 'brüche takes only one operator'
         
@@ -117,8 +141,8 @@ class brüche(base_task):
         
         self.init()
         
-    def generate_numbers(self, start = 0, stop = 20):
-        super().generate_numbers(start, stop )
+    def generate_numbers(self):
+        super().generate_numbers()
         
         self.Nenner1= self.nums[1]
         self.Zahler1= self.nums[0]
@@ -179,6 +203,17 @@ class brüche(base_task):
         [user_num.display() for user_num in self.inputs]
         message_display('-----------',620, 325, 25 )
         
-        
+        self.record.draw()
         button(display_width*0.55, display_height*0.9, display_width*0.3125,display_height/6
-               ,'Eingabe', self.enter, size = 50)  
+               ,'Eingabe', self.enter, size = 50)        
+        
+        
+task = ['+', '-', '*', '/']
+
+einfach = dict((key, base_task([key])) for key in task)  
+mittel =  dict((key, base_task([key,key,key], start =-10, stop = 40 )) for key in task) 
+schwer =  dict((key, base_task([key,key,key,key], reals = 1, start =-10, stop = 40 )) for key in task)   
+ 
+for a in einfach:
+    einfach[a].init()      
+bruch = brüche(['*'])
