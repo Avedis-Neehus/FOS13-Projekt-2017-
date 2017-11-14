@@ -217,6 +217,6 @@ schwer =  dict((key, base_task([key,key,key,key], reals = 1, start =-10, stop = 
 def initz(dics):
     for dic in dics:
         for a in dic:
-            a.init()
+            dic[a].init()
 initz([einfach,mittel,schwer])      
 bruch = brüche(['*'])
