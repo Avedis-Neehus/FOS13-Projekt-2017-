@@ -1,5 +1,5 @@
 from initialise import *
-import functools
+
 
 
 def text_objects(text, font):
@@ -32,8 +32,7 @@ class event_queue():
 class label(event_queue):
     
     keys = { pig.K_1 : 1, pig.K_2 : 2, pig.K_3 : 3 , pig.K_4 : 4 , pig.K_5 :5 , pig.K_6 : 6, pig.K_7 : 7
-        , pig.K_8 : 8 ,pig.K_9 : 9, pig.K_0 : 0, pig.K_MINUS: '-', pig.K_COMMA: ','}
-
+            , pig.K_8 : 8 ,pig.K_9 : 9, pig.K_0 : 0, pig.K_MINUS: '-', pig.K_COMMA: ','}
     
     
     
@@ -69,6 +68,7 @@ class label(event_queue):
         values = [x for x in self.values]
         sign = 1
         
+        
         if values.count('-')> 0:
             sign = -1
             #not using remove for the case of multiple - inputs
@@ -84,16 +84,12 @@ class label(event_queue):
             
         for i,lit in enumerate(values):
             num += lit*10**(length -i -1)
-            
-        return num*sign   
-    
-                        
+        return num*sign     
+                            
     def display(self):
         num = ''.join(str(i) for i in self.values)        
         button(self.x, self.y, 40,40, num, no_click_func = self.fill_values, size = self.size)
-        
-        
-     
+                     
     def delete(self):
         self.values[:] = []
         
@@ -101,7 +97,42 @@ class label(event_queue):
     def delete_all(inst):
         
         [label.delete() for label in inst]
-  
+
+class result(object):
+    
+    def __init__(self, max_len, results = [], dim = [20, 300,20,40]):
+        
+        self.results = results
+        self.max_len = max_len
+        self.dim = dim
+        self.gap = 30
+        
+    def gap_comp(num,L,l,start):
+        
+        pos = L
+        
+    def  draw(self):
+        
+        dim = [a for a in self.dim]
+        
+        for i,res in enumerate(self.results):
+            
+            dim = [a for a in self.dim]
+            dim[0] += 30*i
+               
+            if res:
+                pig.draw.rect(gameDisplay, green,dim)
+                
+            else:
+                pig.draw.rect(gameDisplay, black,dim)
+                
+    def  update(self, res):
+       
+        self.results.append(res)      
+        
+    def clear(self):
+        self.results[:] = []
+        
 def button(x,y,w,h, text = '', func = lambda : None, no_click_func = lambda : None , size = 30):
     #wenn innerhalb button
     mouse = pig.mouse.get_pos()
@@ -123,7 +154,6 @@ def button(x,y,w,h, text = '', func = lambda : None, no_click_func = lambda : No
         #zeig den button
         pig.draw.rect(gameDisplay, red,(x,y,w,h))
         message_display(text,x+(w/2),y+(h/2),size)        
-      
 
 
     
