@@ -213,7 +213,10 @@ task = ['+', '-', '*', '/']
 einfach = dict((key, base_task([key])) for key in task)  
 mittel =  dict((key, base_task([key,key,key], start =-10, stop = 40 )) for key in task) 
 schwer =  dict((key, base_task([key,key,key,key], reals = 1, start =-10, stop = 40 )) for key in task)   
- 
-for a in einfach:
-    einfach[a].init()      
+
+def initz(dics):
+    for dic in dics:
+        for a in dic:
+            a.init()
+initz([einfach,mittel,schwer])      
 bruch = brüche(['*'])
