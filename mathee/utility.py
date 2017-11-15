@@ -88,7 +88,7 @@ class label(event_queue):
                             
     def display(self):
         num = ''.join(str(i) for i in self.values)        
-        button(self.x, self.y, 40,40, num, no_click_func = self.fill_values, size = self.size)
+        button(self.x, self.y, 100,40, num, no_click_func = self.fill_values, size = self.size)
                      
     def delete(self):
         self.values[:] = []
@@ -100,7 +100,7 @@ class label(event_queue):
 
 class result(object):
     
-    def __init__(self, max_len, results = [], dim = [20, 300,20,40]):
+    def __init__(self, max_len, results = [], dim = [20, 500,40,20]):
         
         self.results = results
         self.max_len = max_len
@@ -118,7 +118,7 @@ class result(object):
         for i,res in enumerate(self.results):
             
             dim = [a for a in self.dim]
-            dim[0] += 30*i
+            dim[0] += 50*i
                
             if res:
                 pig.draw.rect(gameDisplay, green,dim)
@@ -140,7 +140,7 @@ def button(x,y,w,h, text = '', func = lambda : None, no_click_func = lambda : No
     
     if x+w > mouse[0] > x and y+h > mouse[1] > y:
         
-        pig.draw.rect(gameDisplay, black,(x,y,w,h))
+        pig.draw.rect(gameDisplay, green,(x,y,w,h))
         message_display(text,x+(w/2),y+(h/2),size)
         no_click_func()
         
