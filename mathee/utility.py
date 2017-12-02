@@ -100,7 +100,7 @@ class label(event_queue):
 
 class result(object):
     
-    def __init__(self, max_len, results = [], dim = [20, 500,40,20]):
+    def __init__(self, max_len = 0, results = [], dim = [20, 500,40,20]):
         
         self.results = results
         self.max_len = max_len
@@ -111,20 +111,36 @@ class result(object):
         
         pos = L
         
-    def  draw(self):
+    def  draw(self, versch = 0):
         
         dim = [a for a in self.dim]
+        gap = 50
+        switch = 1       
+        dim[0]-= gap 
         
-        for i,res in enumerate(self.results):
+        for i,res in enumerate(self.results):            
             
-            dim = [a for a in self.dim]
-            dim[0] += 50*i
+            
+            if i*(gap+dim[2]) > (display_width):  
+                
+                if switch:
+                    a = i
+                    switch = 0
+                    
+                dim[1] = self.dim[1] + self.dim[3]+10
+                dim[0] = self.dim[0] + gap*(i-a)
+                   
+            else:    
+                dim[0] += gap
                
+
+                
+                
             if res:
                 pig.draw.rect(gameDisplay, green,dim)
                 
             else:
-                pig.draw.rect(gameDisplay, black,dim)
+                pig.draw.rect(gameDisplay, red ,dim)
                 
     def  update(self, res):
        
@@ -140,7 +156,7 @@ def button(x,y,w,h, text = '', func = lambda : None, no_click_func = lambda : No
     
     if x+w > mouse[0] > x and y+h > mouse[1] > y:
         
-        pig.draw.rect(gameDisplay, green,(x,y,w,h))
+        pig.draw.rect(gameDisplay, light_gray,(x,y,w,h))
         message_display(text,x+(w/2),y+(h/2),size)
         no_click_func()
         
@@ -152,31 +168,39 @@ def button(x,y,w,h, text = '', func = lambda : None, no_click_func = lambda : No
    
     else:
         #zeig den button
-        pig.draw.rect(gameDisplay, red,(x,y,w,h))
+        pig.draw.rect(gameDisplay, gray,(x,y,w,h))
         message_display(text,x+(w/2),y+(h/2),size)        
 
 
     
-                      
-
+class taskDone(Exception): pass   
+                   
+def loop_exit():    
+    raise taskDone
+    
 def maindeco(func):
  
     
     def structure(*args):
-        while 1:
+        try:
             
-            event_queue.events_update()
-            for event in event_queue.events:        
+            while True:
+                
+                event_queue.events_update()
+                for event in event_queue.events:        
+        
+                    if event.type == pig.QUIT:
+                        
+                        pig.quit()
+                        quit()
+                
+                gameDisplay.fill(white)
+                func(*args)
     
-                if event.type == pig.QUIT:
-                    
-                    pig.quit()
-                    quit()
-            
-            gameDisplay.fill(white)
-            func(*args)
-
-            pig.display.update()      
-            
-            clock.tick(30)
+                pig.display.update()      
+                
+                clock.tick(30)
+        except taskDone:
+            pass
     return structure
+
