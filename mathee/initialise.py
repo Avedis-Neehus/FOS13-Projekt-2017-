@@ -15,10 +15,13 @@ schrift = 'freesansbold.ttf'
 black = (0,0,0)
 white = (255,255,255)
 red = (255,0,0)
-green = (0,255,0)
+green = (60,200,55)
+gray = (192,192,192)
+light_gray = (216,216,216)
 
 clock = pig.time.Clock()
 
+aufgabenzahl = 9
 
 operation = {
         '+' : op.add,
