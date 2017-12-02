@@ -1,11 +1,6 @@
 from utility import *
 import random
-import numpy as np
-
-
-from utility import *
-import random
-import numpy as np
+from copy import deepcopy
 
 
 @maindeco
@@ -14,59 +9,96 @@ def main_menue():
     
     message_display('Hauptmenü', display_width*0.5, display_width*0.15, 58 )
     
-    button( display_width*0.34375, display_height*0.4, display_width*0.3125,display_height/6,'Training', second_menue)
-    button( display_width*0.34375, display_height*0.6, display_width*0.3125,display_height/6,'Training', second_menue)
+    button( display_width*0.34375, display_height*0.35, display_width*0.3125,display_height/6,'Test', basic_test)
+    button( display_width*0.34375, display_height*0.55, display_width*0.3125,display_height/6,'Training', second_menue)
+    button( display_width*0.34375, display_height*0.75, display_width*0.3125,display_height/6,'Time Attack', second_menue)
 
 
 
 @maindeco
 def second_menue():
-                   
-    button( display_width*0.1, display_height*0.3, display_width*0.3125,display_height/6,'+', add_difficulty_menue , size = 60)
-    button( display_width*0.55, display_height*0.3, display_width*0.3125,display_height/6,'-', sub_difficulty_menue , size = 60)
-    button( display_width*0.1, display_height*0.5, display_width*0.3125,display_height/6,'*', mult_difficulty_menue , size = 60)
-    button( display_width*0.55, display_height*0.5, display_width*0.3125,display_height/6,'/', bruch.display_task, size = 60)
-    button( display_width*0.1, display_height*0.7, display_width*0.3125,display_height/6,'einfache Gleichungen', leichte_Gleichung.display_task , size = 20)
-    button( display_width*0.55, display_height*0.7, display_width*0.3125,display_height/6,'schwere Gleichungen', schwere_Gleichung.display_task , size = 20)
+    
+    message_display('Training',display_width*0.5, display_width*0.085, 60 )
+    
+    button( display_width*0.175, display_height*0.2, display_width*0.3125,display_height/6,'+', add_difficulty_menue , size = 60)
+    button( display_width*0.5125, display_height*0.2, display_width*0.3125,display_height/6,'-', sub_difficulty_menue , size = 60)
+    button( display_width*0.175, display_height*0.4, display_width*0.3125,display_height/6,'*',  mult_difficulty_menue , size = 60)
+    button( display_width*0.5125, display_height*0.4, display_width*0.3125,display_height/6,'/', div_difficulty_menue, size = 60)
+               
+    button( display_width*0.175, display_height*0.6, display_width*0.3125,display_height/6,'Gleichungen', gleichungs_menue , size = 20)
+    button( display_width*0.5125, display_height*0.6, display_width*0.3125,display_height/6,'Brüche', bruch_menue , size = 20)
+    button(display_width*0.33, display_height*0.8, display_width*0.3125,display_height/6,'Mix', mix_difficulty_menue , size = 35)
+    back_button(y=0.9)
+    
+@maindeco
+def difficulty_menue(op):
+    
+    message_display(op, display_width*0.48, display_width*0.125, 100 )
+    
+    button( display_width*0.3275, display_height*0.3, display_width*0.3125,display_height/6,'Einfach', einfach[op].display_task , size = 50)
+    button( display_width*0.3275, display_height*0.5, display_width*0.3125,display_height/6,'Mittel',  mittel[op].display_task, size = 50)
+    button( display_width*0.3275, display_height*0.7, display_width*0.3125,display_height/6,'Schwer', schwer[op].display_task, size = 50) 
+    
+    back_button()
 
-@maindeco
+@maindeco    
+def bruch_menue():
+    
+    button( display_width*0.175, display_height*0.2, display_width*0.3125,display_height/6,'+', bruch['+'].display_task , size = 60)
+    button( display_width*0.5125, display_height*0.2, display_width*0.3125,display_height/6,'-', bruch['-'].display_task , size = 60)
+    button( display_width*0.175, display_height*0.4, display_width*0.3125,display_height/6,'*',  bruch['*'].display_task , size = 60)
+    back_button()
+    
+@maindeco    
+def gleichungs_menue():
+    
+    button( display_width*0.175, display_height*0.2, display_width*0.3125,display_height/6,'leichte Gleichung',leichte_Gleichung.display_task , size = 20)
+    button( display_width*0.5125, display_height*0.2, display_width*0.3125,display_height/6,'schwere Gleichung', schwere_Gleichung.display_task , size = 20)
+    
+    back_button()
+    
+    
 def add_difficulty_menue():
-    
-    button( display_width*0.1, display_height*0.3, display_width*0.3125,display_height/6,'einfach', einfach['+'].display_task , size = 60)
-    button( display_width*0.55, display_height*0.3, display_width*0.3125,display_height/6,'mittel',  mittel['+'].display_task, size = 100)
-    button( display_width*0.1, display_height*0.5, display_width*0.3125,display_height/6,'schwer', schwer['+'].display_task, size = 60) 
-    
-@maindeco
+    difficulty_menue('+')        
+
 def sub_difficulty_menue():   
     
-    button( display_width*0.1, display_height*0.3, display_width*0.3125,display_height/6,'einfach', einfach['-'].display_task , size = 60)
-    button( display_width*0.55, display_height*0.3, display_width*0.3125,display_height/6,'mittel',  mittel['-'].display_task, size = 100)
-    button( display_width*0.1, display_height*0.5, display_width*0.3125,display_height/6,'schwer', schwer['-'].display_task, size = 60)
+    difficulty_menue('-')
     
-@maindeco
 def mult_difficulty_menue():
     
-    button( display_width*0.1, display_height*0.3, display_width*0.3125,display_height/6,'einfach', einfach['*'].display_task , size = 60)
-    button( display_width*0.55, display_height*0.3, display_width*0.3125,display_height/6,'mittel',  mittel['*'].display_task, size = 100)
-    button( display_width*0.1, display_height*0.5, display_width*0.3125,display_height/6,'schwer', schwer['*'].display_task, size = 60)
-
-
+    difficulty_menue('*')
+    
+def div_difficulty_menue():
+    
+    difficulty_menue('/')
+    
+def mix_difficulty_menue():
+    difficulty_menue('mix')    
+    
+def back_button(x= 0,y = 0, exit_func = loop_exit):
+    button(display_width*x, display_height*y, display_width*0.2,display_height/10,'zurück',exit_func, size = 30)
+    
 class base_task(object):
     
     size = 50
     
     
-    def __init__(self,operations, task_num = 10, mixed = False, reals = 0, start = 0, stop = 20 ):
+    def __init__(self,operations, task_num = 10, mixed = False, reals = 0, start = 1, stop = 20):
         
         
         self.task_num = task_num
         self.mixed = mixed
         self.start = start
         self.stop = stop
+        self.reals = reals       
         #a list containing operator dict keys
         self.operations = operations
-        self.inputs = [label(display_width*0.7, display_height*0.5, size = 40)]
+        self.inputs = [label(display_width*0.7, display_height*0.625, size = 40)]
         self.record = result(task_num)
+        
+        self.del_record = 1
+        self.back_button = 1
         self.current_task = 0
         
         
@@ -76,8 +108,9 @@ class base_task(object):
         
         n = random.randint(self.start, self.stop)
         
-        #if self.reals:
-         #   return float(format(n, '.2f'))
+        if self.reals:
+            
+            return float(format(n, '.2f'))
         return n
         
     def mix_op(self):
@@ -108,15 +141,20 @@ class base_task(object):
     @maindeco
     def display_task(self):
         
-        message_display(self.operation_to_string(),display_width/2,display_height/2, fix_right = 1)
-        
+        message_display(self.operation_to_string(),display_width/2.3 + len(self.operation_to_string()),display_height/2, fix_right = 0)
+        #message_display(self.operations[0], display_width*0.48, display_width*0.125, 100)
         [user_num.display() for user_num in self.inputs]
         
         self.record.draw()
         
-        button(display_width*0.55, display_height*0.9, display_width*0.3125,display_height/6
+        button(display_width*0.65, display_height*0.8, display_width*0.3125,display_height/6
                ,'Eingabe', self.enter, size = 50)
-   
+        
+        if self.back_button:
+            back_button(exit_func = self.__exit__)
+        
+        
+        
     def get_result(self):
         
             return [eval(self.term)]
@@ -129,6 +167,13 @@ class base_task(object):
        else:
            return 0
        
+    def __exit__(self):
+        
+        if self.del_record:
+            self.record.clear()
+        self.current_task = 0 
+        loop_exit()
+        
     def enter(self):
         
         self.record.update(self.verify())
@@ -140,9 +185,7 @@ class base_task(object):
             self.current_task += 1           
                         
         else:
-            self.record.clear()
-            self.current_task = 0 
-            main_menue()
+            self.__exit__()
             
     def init(self):
         
@@ -150,13 +193,12 @@ class base_task(object):
         self.operation_to_string()
         
         
-add = base_task(['-'])
-add.init()     
+
 
         
 class brüche(base_task):
     
-    input2 = label(display_width*0.7, display_height*0.7, size = 40)  
+     
     
     def __init__(self,operations, task_num = 10, mixed = False, reals = 0, start = 0, stop = 20 ):
         
@@ -166,7 +208,8 @@ class brüche(base_task):
         
         self.operations.insert(0,'/')
         self.operations.append('/')
-        self.inputs.append(label(display_width*0.7, display_height*0.7, size = 40))
+        self.inputs = [label(display_width*0.725, display_height*0.475, size = 40),
+                       label(display_width*0.725, display_height*0.55, size = 40)]
         
         self.init()
         
@@ -233,24 +276,13 @@ class brüche(base_task):
         message_display('-----------',620, 325, 25 )
         
         self.record.draw()
+        
         button(display_width*0.55, display_height*0.9, display_width*0.3125,display_height/6
                ,'Eingabe', self.enter, size = 50)        
 
+        if self.back_button:
+            back_button(exit_func = self.__exit__)
         
-        
-task = ['+', '-', '*', '/']
-
-einfach = dict((key, base_task([key])) for key in task)  
-mittel =  dict((key, base_task([key,key,key], start =-10, stop = 40 )) for key in task) 
-schwer =  dict((key, base_task([key,key,key,key], reals = 1, start =-10, stop = 40 )) for key in task)   
-
-def initz(dics):
-    for dic in dics:
-        for a in dic:
-            dic[a].init()
-            
-initz([einfach,mittel,schwer])             
-bruch = brüche(['*'])
 
 class Aufgabe_Gleichungen(base_task):
 
@@ -488,9 +520,73 @@ class Aufgabe_Gleichungen(base_task):
             self.generate_numbers(-20,20,4)
             self.schwere_Gleichung()
         
+
+def test(tasks, task_num =15): 
+    
+    tasks = deepcopy([val for dic in tasks for val in dic.values()])
+    
+    record = result(task_num)
+    
+    
+    for task in tasks:
+        task.task_num = int(task_num/len(tasks))
+        task.record = record
+        task.del_record = False
+        task.back_button = False
+        task.display_task()
+        #task.record.results[-3:].save()
+    for task in tasks:
+        task.record.clear()
+            
+class closed_div(base_task):
+    
+    
+    def generate_numbers(self):
         
+        assert (len(self.operations)==1), 'brüche takes only one operator' 
+        self.nums = []
+        
+        a= random.randint(self.start, self.stop)
+        b= random.randint(self.start, self.stop)
+        c = a*b
+        self.nums.append(c)
+        self.nums.append(b)
+        return self.nums
+    
+task = ['+', '-', '*']
+
+einfach = dict((key, base_task([key])) for key in task)  
+mittel  =  dict((key, base_task([key,key,key], start =-10, stop = 40 )) for key in task) 
+schwer  =  dict((key, base_task([key,key,key,key], reals = 1, start =-10, stop = 40 )) for key in task)
+bruch   = dict((key, brüche([key], start = 1)) for key in task)  
+
+einfach.update({'/' : closed_div(['/'], stop = 11)})
+einfach.update({'mix' : base_task(['+','*','-'], mixed = 1)})
+mittel.update({'/' : base_task(['/'])})
+mittel.update({'mix' : base_task(['+','*','-','/','+'], mixed = 1)})
+schwer.update({'/' : base_task(['/', '/'])})
+schwer.update({'mix' : base_task(['+','*','/','+','*'], mixed = 1)})
+
+basic_tasks = [einfach, mittel]
+
+def basic_test():
+    test(basic_tasks)
+           
+def initz(dics):
+    for dic in dics:
+        for a in dic:
+            dic[a].init()
+            
+            
+initz([einfach, mittel, schwer])                   
 leichte_Gleichung = Aufgabe_Gleichungen(True, False)
 leichte_Gleichung.init()
         
 schwere_Gleichung = Aufgabe_Gleichungen(False, True)
-schwere_Gleichung.init() 
+schwere_Gleichung.init()  
+
+
+
+
+
+
