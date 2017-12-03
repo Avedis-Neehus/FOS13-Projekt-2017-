@@ -1,3 +1,4 @@
+
 from utility import *
 import random
 from copy import deepcopy
@@ -25,7 +26,7 @@ def second_menue():
     button( display_width*0.175, display_height*0.4, display_width*0.3125,display_height/6,'*',  mult_difficulty_menue , size = 60)
     button( display_width*0.5125, display_height*0.4, display_width*0.3125,display_height/6,'/', div_difficulty_menue, size = 60)
                
-    button( display_width*0.175, display_height*0.6, display_width*0.3125,display_height/6,'Gleichungen', gleichungs_menue , size = 20)
+    button( display_width*0.175, display_height*0.6, display_width*0.3125,display_height/6,'Terme und Gleichungen', gleichungs_menue , size = 20)
     button( display_width*0.5125, display_height*0.6, display_width*0.3125,display_height/6,'Brüche', bruch_menue , size = 20)
     button(display_width*0.33, display_height*0.8, display_width*0.3125,display_height/6,'Mix', mix_difficulty_menue , size = 35)
     back_button(y=0.9)
@@ -52,8 +53,12 @@ def bruch_menue():
 @maindeco    
 def gleichungs_menue():
     
-    button( display_width*0.175, display_height*0.2, display_width*0.3125,display_height/6,'leichte Gleichung',leichte_Gleichung.display_task , size = 20)
+    button( display_width*0.175, display_height*0.2, display_width*0.3125,display_height/6,'leichte Gleichung', leichte_Gleichung.display_task , size = 20)
     button( display_width*0.5125, display_height*0.2, display_width*0.3125,display_height/6,'schwere Gleichung', schwere_Gleichung.display_task , size = 20)
+    button( display_width*0.175, display_height*0.4, display_width*0.3125,display_height/6,'leichte Terme', leichter_Term.display_task , size = 20)
+    button( display_width*0.5125, display_height*0.4, display_width*0.3125,display_height/6,'schwere Terme', schwerer_Term.display_task , size = 20)
+    message_display("Terme und Gleichungen", 440, 50, 45 )
+    
     
     back_button()
     
@@ -110,7 +115,14 @@ class base_task(object):
         
         if self.reals:
             
-            return float(format(n, '.2f'))
+            liste = [random.randint(self.start, self.stop), random.randint(0,9), random.randint(1,9)]
+            ergebnis = 0
+            
+            for i in range(len(liste)):
+                ergebnis+= liste[i] *10**-i
+    
+            return float(format(ergebnis, '.2f'))
+        
         return n
         
     def mix_op(self):
@@ -296,6 +308,8 @@ class Aufgabe_Gleichungen(base_task):
         self.current_task = 0
         self.einfache_Gleichung_bool = einfache_Gleichung_bool
         self.schwere_Gleichung_bool = schwere_Gleichung_bool
+        self.back_button = 1
+        self.del_record = 1
         
         
         self.init()
@@ -306,7 +320,10 @@ class Aufgabe_Gleichungen(base_task):
         self.nums = []
         
         for i in range(anzahl):
-            self.nums.append(random.randint(start, stop))
+            number = random.randint(start, stop)
+            if number == 0:
+                number = 4
+            self.nums.append(number)
         
 
 
@@ -418,10 +435,10 @@ class Aufgabe_Gleichungen(base_task):
 
         
         if self.einfache_Gleichung_bool:
-            message_display("einfache Gleichungen", 380, 50, 50 )
+            message_display("leichte Gleichungen", 440, 50, 50 )
             
         elif self.schwere_Gleichung_bool:
-            message_display("schwere Gleichungen", 380, 50, 50 )
+            message_display("schwere Gleichungen", 440, 50, 50 )
         
         message_display(self.Aufgabe, 200, 200, 40 )
         message_display("x =", display_width*0.6, display_height*0.53, 40 )
@@ -432,15 +449,19 @@ class Aufgabe_Gleichungen(base_task):
            ,'Eingabe', self.display_show_task_solution, size = 50)
         
         [user_num.display() for user_num in self.inputs]
+        
+        if self.back_button:
+
+            back_button(exit_func = self.__exit__)
     
     @maindeco
     def display_show_task_solution(self):
         
         if self.einfache_Gleichung_bool:
-            message_display("einfache Gleichungen", 380, 50, 50 )
+            message_display("leichte Gleichungen", 440, 50, 50 )
             
         elif self.schwere_Gleichung_bool:
-            message_display("schwere Gleichungen", 380, 50, 50 )
+            message_display("schwere Gleichungen", 440, 50, 50 )
         
         message_display("Loesung:", 180, 350, 30 )
         
@@ -471,6 +492,8 @@ class Aufgabe_Gleichungen(base_task):
         button(display_width*0.65, display_height*0.8, display_width*0.3125,display_height/6
            ,'Weiter', self.enter, size = 50)
         
+
+        
     def verify(self):
         
         if all( abs(user.number-correct_num) < 0.05 for user, correct_num in zip(self.inputs, [self.ergebnis]) ) :
@@ -479,6 +502,15 @@ class Aufgabe_Gleichungen(base_task):
         else:
         
             return 0
+        
+        
+    def __exit__(self):
+        
+        if self.del_record:
+            self.record.clear()
+        self.current_task = 0 
+        main_menue()
+        
        
     def enter(self):
         
@@ -521,6 +553,157 @@ class Aufgabe_Gleichungen(base_task):
             self.schwere_Gleichung()
         
 
+
+
+class Terme(Aufgabe_Gleichungen):
+    
+    def __init__(self, einfach_bool, schwer_bool, task_num = 10, mixed = False, ):
+        
+        self.einfach_bool = einfach_bool
+        self.schwer_bool = schwer_bool
+        self.task_num = task_num
+        self.mixed = mixed
+        self.inputs = [label(display_width*0.7, display_height*0.5, size = 40)]
+        self.record = result(task_num)
+        self.current_task = 0
+        self.back_button = 1
+        self.del_record = 1
+        
+        
+        self.init()
+
+
+    def einfache_Terme(self):
+        
+        self.d = self.nums[0]
+        self.e = self.nums[1]
+        
+        self.Zufallszahl = random.randint(1,4)
+        
+        if str(self.Zufallszahl) in "123":
+            
+            if self.Zufallszahl == 1:
+                o = "+ "
+                v = "x "
+                
+            elif self.Zufallszahl == 2:
+                o = "- "
+                v = "x "
+                
+            else:
+                o = "* "
+                v = ""
+            
+            self.Aufgabe = str(self.d) + v + o + str(self.e) + "x"
+            
+            self.ergebnis = eval(str(str(self.d) + o + str(self.e)))
+            
+            
+        else:
+            
+            self.Aufgabe = str(self.d*self.e) + "y" + "/" + str(self.e)
+            
+            self.ergebnis = self.d
+            
+            
+            
+    def schwere_Terme(self):
+        
+        self.d = self.nums[0]
+        self.e = self.nums[1]
+        self.q = self.nums[2]
+        self.p = self.nums[3]
+
+        while self.q-self.p == 0 or self.d*self.e/(self.q-self.p) != self.d*self.e//(self.q-self.p):
+            self.generate_numbers(1,20,4)
+            self.d = self.nums[0]
+            self.e = self.nums[1]
+            self.q = self.nums[2]
+            self.p = self.nums[3]
+            
+        self.Aufgabe = str(self.d) + "x" + " * " + str(self.e) + "y" + " : " + "(" + str(self.q) + "-" + str(self.p) + ")"
+            
+        self.ergebnis = self.d*self.e//(self.q-self.p)
+
+
+
+    
+    @maindeco
+    def display_task(self):
+        
+        if self.einfach_bool:
+    
+            message_display("leichte Terme", 440, 50, 50 )
+            message_display("x", 675, 327, 40 )
+            message_display("Gib hier deine Antwort ein:", 400, 327, 20 )
+            message_display("Vereinfache den Term:", 200, 140, 25 )
+            
+        elif self.schwer_bool:
+            
+            message_display("schwere Terme", 440, 50, 50 )
+            message_display("xy", 690, 327, 40 )
+            message_display("Gib hier deine Antwort ein:", 400, 327, 20 )
+            message_display("Vereinfache den Term:", 200, 140, 25 )
+            
+        [user_num.display() for user_num in self.inputs]
+        
+        self.record.draw()
+        
+        message_display(self.Aufgabe, 200, 200, 40 )
+        
+        button(display_width*0.65, display_height*0.8, display_width*0.3125,display_height/6
+           ,'Eingabe', self.enter, size = 50)
+        
+        if self.back_button:
+
+            back_button(exit_func = self.__exit__)
+            
+            
+     
+        
+    def enter(self):
+        
+        
+        
+        self.record.update(self.verify())
+        if self.current_task < self.task_num:
+            label.delete_all(self.inputs)
+            self.current_task += 1
+            if self.einfach_bool:
+                self.generate_numbers(1,20,2)
+                self.einfache_Terme()
+                self.display_task()
+            
+            elif self.schwer_bool:
+                self.generate_numbers(1,20,4)
+                self.schwere_Terme()
+                self.display_task()
+                
+
+
+        else:
+            self.record.clear()
+            self.current_task = 0
+            main_menue()
+
+        
+
+    def init(self):
+        
+        
+        if self.einfach_bool:
+            
+            self.generate_numbers(1,20,2)
+            self.einfache_Terme()
+
+        elif self.schwer_bool:
+            
+            self.generate_numbers(1,20,4)
+            self.schwere_Terme()
+
+
+
+
 def test(tasks, task_num =15): 
     
     tasks = deepcopy([val for dic in tasks for val in dic.values()])
@@ -552,7 +735,10 @@ class closed_div(base_task):
         self.nums.append(c)
         self.nums.append(b)
         return self.nums
-    
+
+
+
+
 task = ['+', '-', '*']
 
 einfach = dict((key, base_task([key])) for key in task)  
@@ -584,6 +770,11 @@ leichte_Gleichung.init()
         
 schwere_Gleichung = Aufgabe_Gleichungen(False, True)
 schwere_Gleichung.init()  
+
+leichter_Term = Terme(True, False)
+schwerer_Term = Terme(False,True)
+
+
 
 
 
