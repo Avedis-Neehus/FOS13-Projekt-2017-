@@ -12,7 +12,7 @@ def main_menue():
     
     button( display_width*0.34375, display_height*0.35, display_width*0.3125,display_height/6,'Test', basic_test)
     button( display_width*0.34375, display_height*0.55, display_width*0.3125,display_height/6,'Training', second_menue)
-    button( display_width*0.34375, display_height*0.75, display_width*0.3125,display_height/6,'Time Attack', second_menue)
+
 
 
 
@@ -28,7 +28,8 @@ def second_menue():
                
     button( display_width*0.175, display_height*0.6, display_width*0.3125,display_height/6,'Terme und Gleichungen', gleichungs_menue , size = 20)
     button( display_width*0.5125, display_height*0.6, display_width*0.3125,display_height/6,'Brüche', bruch_menue , size = 20)
-    button(display_width*0.33, display_height*0.8, display_width*0.3125,display_height/6,'Mix', mix_difficulty_menue , size = 35)
+    button(display_width*0.5125, display_height*0.8, display_width*0.3125,display_height/6,'Quadratische Funktionen', Quadratischefunktionen_menue , size = 18)
+    button(display_width*0.2375, display_height*0.8, display_width*0.2125,display_height/6,'Mix', mix_difficulty_menue , size = 35)
     back_button(y=0.9)
     
 @maindeco
@@ -57,11 +58,27 @@ def gleichungs_menue():
     button( display_width*0.5125, display_height*0.2, display_width*0.3125,display_height/6,'schwere Gleichung', schwere_Gleichung.display_task , size = 20)
     button( display_width*0.175, display_height*0.4, display_width*0.3125,display_height/6,'leichte Terme', leichter_Term.display_task , size = 20)
     button( display_width*0.5125, display_height*0.4, display_width*0.3125,display_height/6,'schwere Terme', schwerer_Term.display_task , size = 20)
+    button( display_width*0.175, display_height*0.6, display_width*0.3125,display_height/6,'leichte Terme3333333', Nullpunkte.display_task , size = 20)
+    button( display_width*0.5125, display_height*0.6, display_width*0.3125,display_height/6,'schwere Terme222222', Schnittpunkte.display_task , size = 20)
     message_display("Terme und Gleichungen", 440, 50, 45 )
     
     
     back_button()
     
+
+@maindeco    
+def Quadratischefunktionen_menue():
+    
+    button( display_width*0.175, display_height*0.2, display_width*0.3125,display_height/6,'Nullstellen berechnen', Nullpunkte.display_task , size = 20)
+    button( display_width*0.5125, display_height*0.2, display_width*0.3125,display_height/6,'Schnittpunkte berechnen', Schnittpunkte.display_task , size = 18)
+    message_display("Quadratische Funktionen", 460, 50, 45 )
+    message_display("pq-Formel(allgemein):", 260, 300, 25 )
+    message_display("f(x) = x^2 + px +q", 260, 330, 25 )
+    message_display("x1,2 = -p/2 ± √((p/2)^2 -q)", 260, 370, 25 )
+    
+    
+    back_button()
+
     
 def add_difficulty_menue():
     difficulty_menue('+')        
@@ -327,6 +344,7 @@ class Aufgabe_Gleichungen(base_task):
         
 
 
+
     def einfache_Gleichung(self):
         
         self.a = self.nums[0]
@@ -354,7 +372,7 @@ class Aufgabe_Gleichungen(base_task):
 
     def schwere_Gleichung(self):
 
-
+        
         def Pluszeichen(ein_string):
             n = 0
             k = 0
@@ -374,6 +392,7 @@ class Aufgabe_Gleichungen(base_task):
                 string_2 = "+" + string_2
 
             return string_2
+
 
         self.a = self.nums[0]
         self.b = self.nums[1]
@@ -700,10 +719,525 @@ class Terme(Aufgabe_Gleichungen):
             
             self.generate_numbers(1,20,4)
             self.schwere_Terme()
+            
+            
+class Quadratischefunktionen(Aufgabe_Gleichungen):
+
+    def __init__(self, Schnittpunkte_bool, task_num = 10, mixed = False, ):
+        
+        #self.Nullstellen_bool = Nullstellen_bool
+        self.Schnittpunkte_bool = Schnittpunkte_bool
+        self.task_num = task_num
+        self.mixed = mixed
+        self.inputs = [label(display_width*0.39, display_height*0.525, size = 40),
+                       label(display_width*0.77, display_height*0.525, size = 40)]
+        
+        if self.Schnittpunkte_bool:
+            
+            self.inputs = [label(display_width*0.199, display_height*0.525, size = 40),
+                       label(display_width*0.34, display_height*0.525, size = 40)]
+            self.inputs.append(label(display_width*0.618, display_height*0.525, size = 40))
+            self.inputs.append(label(display_width*0.759, display_height*0.525, size = 40))
+        
+        self.record = result(task_num)
+        self.current_task = 0
+        self.back_button = 1
+        self.del_record = 1
+        
+        
+        self.init()
+
+    def create_task(self):
+        
+        
+        def Pluszeichen(ein_string):
+            n = 0
+            k = 0
+            string = ein_string
+            string_2 = ein_string 
+            zahlenstring = "0123456789"
+            for i in string:
+                if i in zahlenstring and string[k-1] not in zahlenstring and k != 0 and string[k-1] not in "+-.^x/(,ST" and string[k-2] not in ":=": # and (i==0 and string[k-1] == "|"):
+            
+                    string_2 = string_2[0:k+n] + "+" + string_2[k+n:]
+        
+                    n += 1
+            
+                k += 1
+        
+        
+            return string_2
+        
+                
+        self.zufallszahl = random.randint(1,5)
+        
+        if str(self.zufallszahl) in "123":
+            
+            # es gibt zwei Nullstellen/Schnittpunkte
+            # P = 60%
+        
+            self.zahl = self.nums[0] 
+            self.zahl = abs(self.zahl)
+        
+            self.quadratzahl_unter_wurzel = self.zahl**2
+        
+            self.p_halbe = self.nums[1]
+        
+            if self.p_halbe**2 == self.zahl**2:
+        
+                self.p_halbe += 1
+        
+            self.p_halbe_quadrat = self.p_halbe**2
+        
+            self.minus_q = self.quadratzahl_unter_wurzel - self.p_halbe_quadrat
+        
+            self.q = -self.minus_q
+        
+            self.p = 2*self.p_halbe
+        
+            self.a = self.nums[2]
+        
+            self.r = 0
+            
+            self.s = 0
+            
+            self.t = 0
+        
+            if self.Schnittpunkte_bool:
+                
+                self.generate_numbers(-10,10,3)
+                
+                self.r = self.nums[0]
+                self.s = self.nums[1]
+                self.t = self.nums[2]
+        
+        
+            self.Aufgabe = "f(x) = " + str(self.a + self.r) + "x^2 " + str(self.a*self.p + self.s) + "x " + str(self.a*self.q + self.t)
+        
+            self.Aufgabe = Pluszeichen(self.Aufgabe)
+        
+        
+            if self.Schnittpunkte_bool:
+                
+                self.Aufgabe = self.Aufgabe + "\n" + "g(x) = " + str(self.r) + "x^2 " + str(self.s) + "x " + str(self.t) + "\n" 
+        
+                self.Aufgabe = Pluszeichen(self.Aufgabe)
+        
+            self.Loesung_x_1 = -self.p_halbe + self.zahl
+        
+            self.Loesung_x_2 = -self.p_halbe - self.zahl
+            
+            if self.Schnittpunkte_bool:
+                
+                self.Loesung_fx_1 = self.r * self.Loesung_x_1**2 + self.s * self.Loesung_x_1 + self.t
+                self.Loesung_fx_2 = self.r * self.Loesung_x_2**2 + self.s * self.Loesung_x_2 + self.t
+        
+        
+            if self.a < 0:
+        
+                self.zwischenloesungsweg_Normalform_bilden1 = str(self.a) + "x^2 " + str(self.a*self.p) + "x " + str(self.a*self.q) + "|: " + "(" + str(self.a) + ")" + "\n"
+        
+            else:
+        
+                self.zwischenloesungsweg_Normalform_bilden1 = str(self.a) + "x^2 " + str(self.a*self.p) + "x " + str(self.a*self.q) + " = 0|: " + str(self.a) + "\n"
+        
+        
+
+            
+
+                
+
+        
+            self.zwischenloesungsweg_Normalform_bilden2 = self.zwischenloesungsweg_Normalform_bilden1 + "x^2 " + str(self.p) + "x " + str(self.q) + " = 0 " + "\n"
+        
+            self.zwischenloesungsweg_minus_p_halbe_q = self.zwischenloesungsweg_Normalform_bilden2 + "-p/2 = " + str(-self.p_halbe) + "\n" + "-q = " + str(self.minus_q) + "\n"
+        
+            self.zwischenloesungsweg_x1_2 = self.zwischenloesungsweg_minus_p_halbe_q + "x1,2 = " + str(-self.p_halbe) + " " + chr(177) + " " + chr(8730) + "(" + "(" + str(self.p_halbe) + ")^2 " + str(self.minus_q) + ")" + "\n"
+        
+            self.zwischenloesungsweg_x1 = self.zwischenloesungsweg_x1_2 + "x1 = " + str(-self.p_halbe) + " + " + chr(8730) + "(" + str(self.quadratzahl_unter_wurzel) + ") = " + str(-self.p_halbe) + " " + str(self.zahl) + " = " + str(self.Loesung_x_1) + "\n"   
+        
+            self.zwischenloesungsweg_x2 = "x2 = " + str(-self.p_halbe) + " - " + chr(8730) + "(" + str(self.quadratzahl_unter_wurzel) + ") = " + str(-self.p_halbe) + " " + str(-self.zahl) + " = " + str(self.Loesung_x_2) + "\n"   
+        
+            
+            if not(self.Schnittpunkte_bool):
+                
+                self.Ansatz = "f(x) = 0" + "\n"
+            
+                self.Loesungsweg = self.Ansatz + self.zwischenloesungsweg_x1 + self.zwischenloesungsweg_x2 + "NST1(" + str(self.Loesung_x_1) + "|0), " + "NST2(" + str(self.Loesung_x_2) + "|0)"
+        
+                self.Loesungsweg = Pluszeichen(self.Loesungsweg)
+            
+            if self.Schnittpunkte_bool:
+                
+                self.Ansatz = "f(x) = g(x)" + "\n"
+                
+                
+                self.zwischenloesungsweg_gleichsetzen = str(self.a + self.r) + "x^2 " + str(self.a*self.p + self.s) + "x " + str(self.a*self.q + self.t) + " = " + str(self.r) + "x^2 " + str(self.s) + "x " + str(self.t) + "|" + str(-self.r) + "x^2" + "|" + str(-self.s) + "x" + "|" + str(-self.t) + "\n"
+        
+                
+                
+                self.zwischenloesungsweg_fx_1 = "g(" + str(self.Loesung_x_1) + ") = " + str(self.r) + "(" + str(self.Loesung_x_1) + ")^2 " + str(self.s) + "(" + str(self.Loesung_x_1) + ") " + str(self.t) + " = " + str(self.Loesung_fx_1) + "\n"
+                
+                self.zwischenloesungsweg_fx_2 = "g(" + str(self.Loesung_x_2) + ") = " + str(self.r) + "(" + str(self.Loesung_x_2) + ")^2 " + str(self.s) + "(" + str(self.Loesung_x_2) + ") " + str(self.t) + " = " + str(self.Loesung_fx_2) + "\n"
+                
+                self.Loesungsweg = self.Ansatz + self.zwischenloesungsweg_gleichsetzen + self.zwischenloesungsweg_x1 + self.zwischenloesungsweg_x2 + self.zwischenloesungsweg_fx_1 + self.zwischenloesungsweg_fx_2 + "S1(" + str(self.Loesung_x_1) + "|" + str(self.Loesung_fx_1) + "), "  + "S2(" + str(self.Loesung_x_2) + "|" + str(self.Loesung_fx_2) + ")"
+                
+                
+                self.Loesungsweg = Pluszeichen(self.Loesungsweg)
+        
+            if not(self.Schnittpunkte_bool):
+            
+                self.ergebnisse = [self.Loesung_x_1, self.Loesung_x_2]
+                
+            if self.Schnittpunkte_bool:
+                
+                self.ergebnisse = [self.Loesung_x_1, self.Loesung_fx_1 ,self.Loesung_x_2, self.Loesung_fx_2]
+                
+
+        
+        
+        elif self.zufallszahl == 4:
+            
+            #es gibt genau eine Nullstelle/Schnittpunkt
+            # P = 20%
+        
+            self.p_halbe = self.nums[0]
+        
+            self.p_halbe_quadrat = self.p_halbe**2
+        
+            self.minus_q = -self.p_halbe_quadrat
+        
+            self.q = - self.minus_q 
+        
+            self.p = 2*self.p_halbe
+        
+            self.a = self.nums[1]
+            
+            self.r = 0
+            
+            self.s = 0
+            
+            self.t = 0
+        
+            if self.Schnittpunkte_bool:
+                
+                self.generate_numbers(-10,10,3)
+                
+                self.r = self.nums[0]
+                self.s = self.nums[1]
+                self.t = self.nums[2]
+        
+        
+            self.Aufgabe = "f(x) = " + str(self.a + self.r) + "x^2 " + str(self.a*self.p + self.s) + "x " + str(self.a*self.q + self.t)
+        
+        
+        
+            self.Aufgabe = Pluszeichen(self.Aufgabe)
+        
+            
+            if self.Schnittpunkte_bool:
+                
+                self.Aufgabe = self.Aufgabe + "\n" + "g(x) = " + str(self.r) + "x^2 " + str(self.s) + "x " + str(self.t) + "\n" + self.Aufgabe
+        
+                self.Aufgabe = Pluszeichen(self.Aufgabe)
+        
+            self.Loesung_x_1 = -self.p_halbe
+            
+            if self.Schnittpunkte_bool:
+                
+                self.Loesung_fx_1 = self.r * self.Loesung_x_1**2 + self.s * self.Loesung_x_1 + self.t
+        
+            if self.a < 0:
+        
+                self.zwischenloesungsweg_Normalform_bilden1 = str(self.a) + "x^2 " + str(self.a*self.p) + "x " + str(self.a*self.q) + "|: " + "(" + str(self.a) + ")" + "\n"
+        
+            else:
+                
+                self.zwischenloesungsweg_Normalform_bilden1 = str(self.a) + "x^2 " + str(self.a*self.p) + "x " + str(self.a*self.q) + " = 0|: " + str(self.a) + "\n"
+        
+        
+            self.zwischenloesungsweg_Normalform_bilden2 = self.zwischenloesungsweg_Normalform_bilden1 + "x^2 " + str(self.p) + "x " + str(self.q) + " = 0 " + "\n"
+        
+            self.zwischenloesungsweg_minus_p_halbe_q = self.zwischenloesungsweg_Normalform_bilden2 + "-p/2 = " + str(-self.p_halbe) + "\n" + "-q = " + str(self.minus_q) + "\n"
+        
+            self.zwischenloesungsweg_x1_2 = self.zwischenloesungsweg_minus_p_halbe_q + "x1,2 = " + str(-self.p_halbe) + " " + chr(177) + " " + chr(8730) + "(" + "(" + str(self.p_halbe) + ")^2 " + str(self.minus_q) + ")" + "\n"
+        
+            self.zwischenloesungsweg_x1 = self.zwischenloesungsweg_x1_2 + "x1 = " + str(-self.p_halbe) + " + " + chr(8730) + "(" + str(self.p_halbe_quadrat-self.q) + ") = " + str(-self.p_halbe) + " " + "+0" + " = " + str(self.Loesung_x_1) + "\n"
+            
+            if not(self.Schnittpunkte_bool):
+                
+                self.Ansatz = "f(x) = 0" + "\n"
+            
+                self.Loesungsweg = self.Ansatz + self.zwischenloesungsweg_x1 + "NST(" + str(self.Loesung_x_1) + "|0)"
+        
+                self.Loesungsweg = Pluszeichen(self.Loesungsweg)
+
+
+            if self.Schnittpunkte_bool:
+                
+                self.Ansatz = "f(x) = g(x)" + "\n"
+                
+                
+                self.zwischenloesungsweg_gleichsetzen = str(self.a + self.r) + "x^2 " + str(self.a*self.p + self.s) + "x " + str(self.a*self.q + self.t) + " = " + str(self.r) + "x^2 " + str(self.s) + "x " + str(self.t) + "|" + str(-self.r) + "x^2" + "|" + str(-self.s) + "x" + "|" + str(-self.t) + "\n"
+        
+                self.zwischenloesungsweg_gleichsetzen = Pluszeichen(self.zwischenloesungsweg_gleichsetzen)
+                
+                self.Loesungsweg = self.Ansatz + self.zwischenloesungsweg_gleichsetzen + self.zwischenloesungsweg_x1 + "S(" + str(self.Loesung_x_1) + "|" + str(self.Loesung_fx_1) + ")"
+        
+                self.Loesungsweg = Pluszeichen(self.Loesungsweg)
+                
+            if not(self.Schnittpunkte_bool):
+            
+                self.ergebnisse = [self.Loesung_x_1, 0]
+                
+            if self.Schnittpunkte_bool:
+        
+                self.ergebnisse = [self.Loesung_x_1, self.Loesung_fx_1, 0, 0]
+        
+        
+        else:
+            
+            # es gibt keine Nullstelle/Schnittpunkt
+            # P = 20%
+        
+            self.p_halbe = self.nums[0]
+        
+            self.p_halbe_quadrat = self.p_halbe**2
+        
+            self.minus_q = -(self.p_halbe_quadrat + random.randint(1,20))
+        
+            self.q = - self.minus_q 
+        
+            self.p = 2*self.p_halbe
+        
+            self.a = self.nums[1]
+            
+            self.r = 0
+            
+            self.s = 0
+            
+            self.t = 0
+        
+            if self.Schnittpunkte_bool:
+                
+                self.generate_numbers(-10,10,3)
+                
+                self.r = self.nums[0]
+                self.s = self.nums[1]
+                self.t = self.nums[2]
+        
+        
+            self.Aufgabe = "f(x) = " + str(self.a + self.r) + "x^2 " + str(self.a*self.p + self.s) + "x " + str(self.a*self.q + self.t)
+        
+        
+            self.Aufgabe = "f(x) = " + str(self.a) + "x^2 " + str(self.a*self.p) + "x " + str(self.a*self.q)
+        
+            self.Aufgabe = Pluszeichen(self.Aufgabe)
+        
+        
+            if self.Schnittpunkte_bool:
+                
+                self.Aufgabe = self.Aufgabe + "\n" + "g(x) = " + str(self.r) + "x^2 " + str(self.s) + "x " + str(self.t) + "\n" + self.Aufgabe
+        
+                self.Aufgabe = Pluszeichen(self.Aufgabe)
+        
+
+        
+            if self.a < 0:
+        
+                self.zwischenloesungsweg_Normalform_bilden1 = str(self.a) + "x^2 " + str(self.a*self.p) + "x " + str(self.a*self.q) + "|: " + "(" + str(self.a) + ")" + "\n"
+        
+            else:
+        
+                self.zwischenloesungsweg_Normalform_bilden1 = str(self.a) + "x^2 " + str(self.a*self.p) + "x " + str(self.a*self.q) + " = 0|: " + str(self.a) + "\n"
+        
+            self.zwischenloesungsweg_Normalform_bilden2 = self.zwischenloesungsweg_Normalform_bilden1 + "x^2 " + str(self.p) + "x " + str(self.q) + " = 0 " + "\n"
+        
+            self.zwischenloesungsweg_minus_p_halbe_q = self.zwischenloesungsweg_Normalform_bilden2 + "-p/2 = " + str(-self.p_halbe) + "\n" + "-q = " + str(self.minus_q) + "\n"
+        
+            self.zwischenloesungsweg_x1_2 = self.zwischenloesungsweg_minus_p_halbe_q + "x1,2 = " + str(-self.p_halbe) + " " + chr(177) + " " + chr(8730) + "(" + "(" + str(self.p_halbe) + ")^2 " + str(self.minus_q) + ")" + "\n"
+        
+            if not(self.Schnittpunkte_bool):
+                
+                self.Ansatz = "f(x) = 0" + "\n"
+            
+                self.Loesungsweg = self.Ansatz + self.zwischenloesungsweg_x1_2 + "x1,2 = " + str(-self.p_halbe) + " " + chr(177) + " " + chr(8730) + "(" + str(self.p_halbe_quadrat-self.q) + ")" + "\n" + "da " + chr(8730) + "(x) x >= 0 gelten muss" + "\n" + "=> f(x) hat keine Nullpunkte." 
+            
+                self.Loesungsweg = Pluszeichen(self.Loesungsweg)
+
+
+            if self.Schnittpunkte_bool:
+                
+                self.Ansatz = "f(x) = g(x)" + "\n"
+                
+                self.zwischenloesungsweg_gleichsetzen = str(self.a + self.r) + "x^2 " + str(self.a*self.p + self.s) + "x " + str(self.a*self.q + self.t) + " = " + str(self.r) + "x^2 " + str(self.s) + "x " + str(self.t) + "|" + str(-self.r) + "x^2" + "|" + str(-self.s) + "x" + "|" + str(-self.t) + "\n"
+        
+                self.zwischenloesungsweg_gleichsetzen = Pluszeichen(self.zwischenloesungsweg_gleichsetzen)
+                
+                self.Loesungsweg = self.Ansatz + self.zwischenloesungsweg_gleichsetzen + self.zwischenloesungsweg_x1_2 + "x1,2 = " + str(-self.p_halbe) + " " + chr(177) + " " + chr(8730) + "(" + str(self.p_halbe_quadrat-self.q) + ")" + "\n" + "da " + chr(8730) + "(x) x >= 0 gelten muss" + "\n" + "f(x) und g(x) haben keine Schnittpunkte."
+                
+                self.Loesungsweg = Pluszeichen(self.Loesungsweg)
+        
+            if not(self.Schnittpunkte_bool):
+            
+                self.ergebnisse = [0,0]
+                
+                
+            if self.Schnittpunkte_bool:
+                
+                self.ergebnisse = [0, 0, 0, 0]
 
 
 
+    @maindeco
+    def display_task(self):
+        
+        message_display("Quadratische Funktionen", 440, 50, 40 )
+        
+        
+        if not(self.Schnittpunkte_bool):
+        
+            message_display("Bestimmen Sie die Nullstellen von f(x)", 300, 130, 30 )
+            message_display("Falls f(x) nur eine Nullstelle hat: NST1(die Nullstelle|0) und NST2(-|0) eingeben", 490, 380, 15 )
+            message_display("Falls f(x) keine Nullstellen hat: NST1(-|0) und NST2(-|0) eingeben", 445, 410, 15 )
+            
+            message_display("NST1(", 250, 335, 40 )
+            message_display("|0),", 440, 335, 40 )
+            message_display("NST2(", 555, 335, 40 )
+            message_display("|0)", 740, 335, 40 )
+        
+        if self.Schnittpunkte_bool:
+            
+            message_display("Bestimmen Sie die Scnittpunkte von f(x) und g(x)", 400, 130, 30 )
+            message_display("|", 265, 335, 40 )
+            message_display("S1(", 125, 335, 40 )
+            message_display("),", 385, 335, 40 )
+            message_display("S1(", 460, 335, 40 )
+            message_display("|", 600, 335, 40 )
+            message_display(")", 716, 335, 40 )
+            message_display("Falls f(x) und g(x) nur einen Schnittpunkt haben: S1(die Schnittstelle_x|Schnittstelle_g(x)) und S2(-|-) eingeben", 400, 380, 15 )
+            message_display("Falls f(x) und g(x) keinen Schnittpunkt haben: S1(die Schnittstelle_x|Schnittstelle_g(x)) und S2(-|-) eingeben", 390, 410, 15 )
+            
+            
+            
+            line = ""
+            height = 200
+            width = 250
+            size = 40
+        
+            for element in self.Aufgabe:
+                
+                if element == "\n":
+                    message_display(line, width, height, size )
+                    line = ""
+                    height += 45
+                    continue
+                
+                line = str(line + element)
+                
+        else:
+        
+            message_display(self.Aufgabe, 250, 200, 40 )
+        
+        button(display_width*0.65, display_height*0.8, display_width*0.3125,display_height/6
+           ,'Eingabe', self.display_show_task_solution, size = 50)
+        
+        [user_num.display() for user_num in self.inputs]
+        if self.back_button:
 
+            back_button(exit_func = self.__exit__)
+            
+        self.record.draw()
+        
+    @maindeco
+    def display_show_task_solution(self):
+        
+        message_display("Quadratische Funktionen", 440, 25, 40 )
+        
+        message_display("pq-Formel(allgemein):", 600, 300, 25 )
+        message_display("f(x) = x^2 + px +q", 600, 330, 25 )
+        message_display("x1,2 = -p/2 ± √((p/2)^2 -q)", 600, 370, 25 )
+        
+        if not(self.Schnittpunkte_bool):
+            
+            message_display("Loesung:", 100, 260, 25) 
+            
+            if self.verify():
+                message_display("Richtig!", 120, 200, 25 )
+                
+            else:
+                message_display("Leider Falsch!", 120, 200, 25 )
+        
+        if self.Schnittpunkte_bool: 
+        
+            message_display("Loesung:", 100, 130, 25) 
+            
+            if self.verify():
+                message_display("Richtig!", 120, 80, 25 )
+                
+            else:
+                message_display("Leider Falsch!", 120, 80, 25 )
+        
+        line = ""
+        height = 300
+        width = 150
+        size = 20
+        
+        if self.Schnittpunkte_bool:
+            
+            height = 180
+            width = 200
+            size = 16
+        
+        for element in self.Loesungsweg:
+            
+            if element == "\n":
+                message_display(line, width, height, size )
+                line = ""
+                height += 35
+                continue
+            
+            line = str(line + element)
+            
+        message_display(line, width, height, size )
+        
+        button(display_width*0.65, display_height*0.8, display_width*0.3125,display_height/6
+           ,'Weiter', self.enter, size = 50)
+    
+    
+    def enter(self):
+        
+        
+        
+        self.record.update(self.verify())
+        if self.current_task < self.task_num:
+            label.delete_all(self.inputs)
+            self.current_task += 1
+            self.generate_numbers(-20,20,3)
+            self.create_task()
+            self.display_task()
+            
+        else:
+            self.record.clear()
+            self.current_task = 0
+            main_menue()
+        
+    
+    def verify(self):
+        
+        if all( abs(user.number-correct_num) < 0.05 for user, correct_num in zip(self.inputs, self.ergebnisse) ) :
+            
+            return 1
+        else:
+        
+            return 0
+        
+    
+    def init(self):
+        
+        self.generate_numbers(-20,20,3)
+        self.create_task()
+        
 def test(tasks, task_num =15): 
     
     tasks = deepcopy([val for dic in tasks for val in dic.values()])
@@ -774,6 +1308,9 @@ schwere_Gleichung.init()
 leichter_Term = Terme(True, False)
 schwerer_Term = Terme(False,True)
 
+Nullpunkte = Quadratischefunktionen(False)
+
+Schnittpunkte = Quadratischefunktionen(True)
 
 
 
